@@ -1,17 +1,22 @@
+package gra;
+
+import gracze.*;
+
 import java.util.Scanner;
 
 public class MasterMind {
-    public final static int długośćKodu = 4;
-    public final static int liczbaKolorów = 6;
-    private Kod kod;
+    public  static int długośćKodu = 4;
+    public  static int liczbaKolorów = 6;
 
-    public void start() {
+    //Mechanizm gry
+    public static void start() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Wybierz tryb gry:");
         System.out.println("1. Ty ustalasz kod, komputer zgaduje.");
         System.out.println("2. Komputer ustala kod, Ty zgadujesz.");
         int tryb = scanner.nextInt();
+        scanner.nextLine();
 
         if (tryb == 1) {
             System.out.println("Wybrałeś tryb: Ty ustalasz kod, komputer zgaduje.");
@@ -26,61 +31,50 @@ public class MasterMind {
     }
 
     // Tryb: komputer zgaduje
-    private void komputerZgaduje(Scanner scanner) {
+    private static void komputerZgaduje(Scanner scanner) {
         System.out.println("Podaj kod:");
-        Kod kodGracza = Kod.stringToCode(scanner.nextLine());
+        Kod sekret = Kod.stringToCode(scanner.nextLine());
         KomputerGracz komputer = new KomputerGracz();
 
-        int próby = 0;
-        boolean guessed = false;
+        int próby = 1;
+        boolean zgadł = false;
 
-        while (!guessed) {
-            Kod strzał = komputer.makeGuess();
+        while (!zgadł) {
+            Kod strzał = komputer.zgaduj();
 
-            System.out.println("Komputer zgaduje: " + guess);
-            int[] feedback = getUserFeedback(scanner, guess);
-            if (feedback[0] == codeLength) {
-                System.out.println("Komputer odgadł hasło w " + (attempts + 1) + " próbach!");
-                guessed = true;
+            System.out.println("Komputer zgaduje: " + strzał);
+            WynikFeedback wynik = Feedback.sprawdźStrzał(sekret, strzał); //Komputer dostaje feedback
+            //WynikFeedback wynik = FeedDlaGracza.dajFeedback(sekret, strzał);
+
+            if (wynik.daj()[0] == długośćKodu) {
+                System.out.println("Komputer odgadł hasło w " + próby + " próbach");
+                zgadł = true;
             } else {
-                computer.updatePossibleCodes(guess, feedback);
-                attempts++;
+                komputer.aktualizujKody(strzał, wynik); //Aktualizujemy na podstawie feedbacku
+                próby++;
             }
-        }
-        if (!guessed) {
-            System.out.println("Komputer nie odgadł hasła w " + maxAttempts + " próbach.");
         }
     }
 
     // Tryb: komputer wybiera kod, człowiek zgaduje
-    private void graczZgaduje(Scanner scanner) {
-        int[] randCode = new int[codeLength];
-        for (int i = 0; i < codeLength; i++) {
-            randCode[i] = 1 + (int)(Math.random() * numColors);
-        }
-        Code secretCode = new Code(randCode);
+    private static void graczZgaduje(Scanner scanner) {
+        Kod sekret = Kod.losowyKod();
 
-        int attempts = 0;
-        boolean guessed = false;
-        while (attempts < maxAttempts && !guessed) {
-            System.out.print("Podaj zgadywany kod (cztery liczby 1-6, bez spacji, np. 1234): ");
-            String guessStr = scanner.nextLine();
-            int[] guessArr = new int[codeLength];
-            for (int i = 0; i < codeLength; i++) {
-                guessArr[i] = Character.getNumericValue(guessStr.charAt(i));
-            }
-            Code guess = new Code(guessArr);
-            int[] feedback = Evaluator.evaluate(guess, secretCode);
-            System.out.println("Czarne: " + feedback[0] + ", białe: " + feedback[1]);
-            if (feedback[0] == codeLength) {
-                System.out.println("Brawo! Odgadłeś kod w " + (attempts + 1) + " próbach!");
-                guessed = true;
+        int próby = 1;
+        boolean zgadł = false;
+        while (!zgadł) {
+            System.out.print("Próba " + próby + ":\n");
+            String kod = scanner.nextLine();
+            Kod kodGracza = Kod.stringToCode(kod);
+            WynikFeedback wynik = FeedDlaGracza.dajFeedback(sekret, kodGracza);
+
+            if (wynik.daj()[0] == długośćKodu) {
+                System.out.println("Wygrałeś w " + próby + " próbach");
+                zgadł = true;
             } else {
-                attempts++;
+                próby++;
             }
-        }
-        if (!guessed) {
-            System.out.println("Niestety, nie udało się odgadnąć kodu. Poprawny kod to: " + secretCode);
+
         }
     }
 }

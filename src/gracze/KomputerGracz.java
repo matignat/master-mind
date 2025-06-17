@@ -1,3 +1,5 @@
+package gracze;
+
 import gra.*;
 
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ public class KomputerGracz {
         this.możliweKody = generujMożliwości();
     }
 
+    //rekursywnie generuje wszytski możliwości
     private List<Kod> generujMożliwości() {
         List<Kod> kody = new ArrayList<>();
         genrujRek(new int[długośćKodu], 0, kody);
@@ -35,14 +38,16 @@ public class KomputerGracz {
         return możliweKody.get(0);
     }
 
-    public void aktualizujKody(Kod strzał, WynikFeedback feedback) {
+    public void aktualizujKody(Kod kod, WynikFeedback feedback) { //Wywoływane od oryginalnego strzału i jego feedbacku
         List<Kod> noweKody = new ArrayList<>();
-        for (Kod kod : możliweKody) {
-            WynikFeedback wynik = Feedback.sprawdźStrzał(strzał, kod); //porównujemy feedback naszego kodu i wszytskich możliwych zostawiamy tylko takie same
-            
+        for (Kod możliwy : możliweKody) {
+            WynikFeedback wynik = Feedback.sprawdźStrzał(kod, możliwy); //Traktujemy nasz strzał jako sekretny kod zostawiamy to co daje taki sam feed
+            if (wynik.equals(feedback)) {
+                noweKody.add(możliwy);
+            }
         }
+        this.możliweKody = noweKody;
     }
-
 
 
 }
