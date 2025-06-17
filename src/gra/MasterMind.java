@@ -12,21 +12,30 @@ public class MasterMind {
     public static void start() {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Wybierz tryb gry:");
-        System.out.println("1. Ty ustalasz kod, komputer zgaduje.");
-        System.out.println("2. Komputer ustala kod, Ty zgadujesz.");
-        int tryb = scanner.nextInt();
-        scanner.nextLine();
+        while (true) { //nieskonczona petla
 
-        if (tryb == 1) {
-            System.out.println("Wybrałeś tryb: Ty ustalasz kod, komputer zgaduje.");
-            komputerZgaduje(scanner);
-        } else if (tryb == 2) {
-            System.out.println("Wybrałeś tryb: Komputer ustala kod, Ty zgadujesz.");
-            graczZgaduje(scanner);
-        } else {
-            System.out.println("Niepoprawny wybór.");
-            start();
+            System.out.println("Wybierz tryb gry:");
+            System.out.println("1. Ty ustalasz kod, komputer zgaduje.");
+            System.out.println("2. Komputer ustala kod, Ty zgadujesz.");
+            try {
+                int tryb = scanner.nextInt();
+                scanner.nextLine();
+
+                if (tryb == 1) {
+                    System.out.println("Wybrałeś tryb: Ty ustalasz kod, komputer zgaduje.");
+                    komputerZgaduje(scanner);
+                    break;
+                } else if (tryb == 2) {
+                    System.out.println("Wybrałeś tryb: Komputer ustala kod, Ty zgadujesz.");
+                    graczZgaduje(scanner);
+                    break;
+                } else {
+                    System.out.println("Niepoprawny wybór. Spróbuj ponownie.");
+                }
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Podaj liczbę 1 lub 2!");
+                scanner.nextLine(); // czyści błędny input
+            }
         }
     }
 

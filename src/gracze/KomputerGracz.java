@@ -39,14 +39,9 @@ public class KomputerGracz {
     }
 
     public void aktualizujKody(Kod kod, WynikFeedback feedback) { //Wywoływane od oryginalnego strzału i jego feedbacku
-        List<Kod> noweKody = new ArrayList<>();
-        for (Kod możliwy : możliweKody) {
-            WynikFeedback wynik = Feedback.sprawdźStrzał(kod, możliwy); //Traktujemy nasz strzał jako sekretny kod zostawiamy to co daje taki sam feed
-            if (wynik.equals(feedback)) {
-                noweKody.add(możliwy);
-            }
-        }
-        this.możliweKody = noweKody;
+        this.możliweKody = możliweKody.stream()     //robie stream zamiast manualnego sorta
+                .filter(k -> Feedback.sprawdźStrzał(kod, k).equals(feedback))
+                .toList();
     }
 
 
