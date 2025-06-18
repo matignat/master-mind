@@ -37,8 +37,9 @@ public class FeedDlaGracza {
                 if (!trafiony) feedback[i] = 'X';
             }
         }
-        System.out.println(feedback);
-
-        return new WynikFeedback(czarne, białe);
+        WynikFeedback wynik = new WynikFeedback(czarne, białe);
+        //System.out.println(feedback);  ;ułatwienie - zwraca pozycje
+        System.out.println(wynik);
+        return wynik;
     }
 }
