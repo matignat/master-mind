@@ -18,6 +18,11 @@ public class WynikFeedback {
     }
 
     @Override
+    public String toString() {
+        return "Trafione:" + czarne + ", zła pozycja:" + białe;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof WynikFeedback)) return false;
